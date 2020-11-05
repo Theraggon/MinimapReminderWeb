@@ -1,0 +1,30 @@
+<p>reminder works!</p>
+
+<input
+  #slider
+  type="range"
+  min="0"
+  max="2"
+  [value]="volume$ | async"
+  step="0.01"
+  (change)="sliderChanged($event)"
+/>
+
+<input
+  type="number"
+  step="100"
+  [min]="intervalMinimum"
+  [value]="intervalValueInMilliseconds$ | async"
+  (change)="intervalChanged($event)"
+/>
+
+<input
+  type="number"
+  step="50"
+  [min]="playTimeMinimum"
+  [value]="playTimeValue$ | async"
+  (change)="playTimeChanged($event)"
+/>
+
+<button (click)="start()">Start</button>
+<button (click)="stop()">Stop</button>
