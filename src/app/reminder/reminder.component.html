@@ -1,30 +1,71 @@
-<p>reminder works!</p>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Minimap Reminder</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <div class="row">
+        <mat-icon aria-label="Volume" title="Volume"> volume_up </mat-icon>
 
-<input
-  #slider
-  type="range"
-  min="0"
-  max="2"
-  [value]="volume$ | async"
-  step="0.01"
-  (change)="sliderChanged($event)"
-/>
+        <mat-slider
+          #volumeSlider
+          thumbLabel
+          color="accent"
+          step="1"
+          min="0"
+          max="200"
+          [value]="volume$ | async"
+          [displayWith]="formatVolumeLabel"
+          (change)="volumeSliderChanged($event)"
+        ></mat-slider>
+      </div>
 
-<input
-  type="number"
-  step="100"
-  [min]="intervalMinimum"
-  [value]="intervalValueInMilliseconds$ | async"
-  (change)="intervalChanged($event)"
-/>
+      <div class="row">
+        <mat-icon aria-label="Interval" title="Interval"> timer </mat-icon>
+        <mat-form-field color="accent">
+          <mat-label>Inteval (ms)</mat-label>
+          <input
+            matInput
+            type="number"
+            step="100"
+            [min]="intervalMinimum"
+            [value]="intervalValueInMilliseconds$ | async"
+            (change)="intervalChanged($event)"
+          />
+        </mat-form-field>
+      </div>
 
-<input
-  type="number"
-  step="50"
-  [min]="playTimeMinimum"
-  [value]="playTimeValue$ | async"
-  (change)="playTimeChanged($event)"
-/>
-
-<button (click)="start()">Start</button>
-<button (click)="stop()">Stop</button>
+      <div class="row">
+        <mat-icon aria-label="Sound duration" title="Sound duration">
+          timelapse
+        </mat-icon>
+        <mat-form-field color="accent">
+          <mat-label>Sound duration (ms)</mat-label>
+          <input
+            matInput
+            type="number"
+            step="50"
+            [min]="playTimeMinimum"
+            [value]="playTimeValue$ | async"
+            (change)="playTimeChanged($event)"
+          />
+        </mat-form-field>
+      </div>
+      <div class="column">
+        <label id="example-radio-group-label">Sound type:</label>
+        <mat-radio-group
+          [value]="soundType$ | async"
+          (change)="soundTypeChanged($event)"
+          aria-label="Select a sound type"
+        >
+          <mat-radio-button value="sine">Sine</mat-radio-button>
+          <mat-radio-button value="sawtooth">Sawtooth</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-flat-button color="primary" (click)="start()">Start</button>
+    <button mat-flat-button (click)="stop()">Stop</button>
+  </mat-card-actions>
+</mat-card>
