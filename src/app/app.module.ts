@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +29,7 @@ import { ReminderComponent } from './reminder/reminder.component';
     MatFormFieldModule,
     MatSnackBarModule,
     MatRadioModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
