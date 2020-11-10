@@ -1,0 +1,63 @@
+<div class="wrapper">
+  <header><h1>Info</h1></header>
+  <section>
+    <h2>Purpose</h2>
+    <p>
+      I have a problem with my minimap awereness. <br />
+      At first I tried a simple solution. I took a sound and played it in loop
+      every 5 seconds, every time I heard the sound I looked at the minimap. But
+      after first 5 minutes I started to ignore the sound. <br />
+      So I wrote a python script that took a folder of sounds and played them in
+      customizable interval. That worked fine but I had a problem of finding
+      good amount of short enough sounds. Also every sound was not equally loud.
+      In the end I ended up with 5 or 6 sounds and it just took a little bit
+      longer to start ignoring them too.
+      <br />
+      And it was a python script so if I wanted to share it, people would need
+      to download potentionaly malicious code. <br />
+      So I decided to make a web version of it. And I didn't want to code file
+      handling operations to feed the page with sounds or provide only limited
+      sounds I selected. <br />
+      I needed to generate random sounds.
+    </p>
+  </section>
+  <section>
+    <h2>How it works</h2>
+    <p>
+      Plays sound every &#123;interval&#125; milliseconds for
+      &#123;duration&#125; milliseconds.
+    </p>
+    <p>
+      The sound is generated using oscillator
+      <br />
+      You can select between 2 types: <br />
+      Sine is more natural sounding <br />
+      Sawtooth is more of a buzzing sound
+    </p>
+  </section>
+  <section>
+    <h2>How I use it</h2>
+    <p>
+      General advice is to look at minimap every 5 seconds. <br />
+      That may be good if you are well trained but I tried to play the sound
+      every 5 seconds and it was too annoying. <br />
+      I set my interval at around 8 seconds. Also I use it more of a reminder
+      and not a command. Should look, not a must look. <br />I try to look at
+      minimap everytime there is a chance. When there is nothing to last-hit or
+      after just last-hitting. When someone pings. When I am safe. And every
+      time I hear the sound it reminds me to do just that. Not to look at the
+      minimap immediately. If I have a second I'll look.
+    </p>
+  </section>
+  <section>
+    <h2>Be careful with the volume</h2>
+    <p>The volume is usually loud enough even when low.</p>
+  </section>
+  <section>
+    <h2>Fun stuff</h2>
+    <p>
+      Try setting interval to 100 ms and enjoy your own little robot. Also lower
+      the volume before trying this just to be safe!
+    </p>
+  </section>
+</div>

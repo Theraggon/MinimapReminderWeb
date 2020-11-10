@@ -42,7 +42,7 @@ export class ReminderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
-    stop();
+    this.stop();
   }
 
   ngOnInit(): void {
@@ -97,8 +97,10 @@ export class ReminderComponent implements OnInit, OnDestroy {
 
     if (intervalValue - this.playTimeMinimum <= this.playTimeValue$.value) {
       if (intervalValue - this.playTimeMinimum < this.playTimeMinimum) {
+        console.log(`Play time: ${this.playTimeMinimum}`);
         this.playTimeValue$.next(this.playTimeMinimum);
       } else {
+        console.log(`Play time: ${intervalValue - this.playTimeMinimum}`);
         this.playTimeValue$.next(intervalValue - this.playTimeMinimum);
       }
     }
@@ -111,19 +113,21 @@ export class ReminderComponent implements OnInit, OnDestroy {
     if (playTimeValue < this.playTimeMinimum) {
       playTimeValue = this.playTimeMinimum;
     }
+    this.playTimeValue$.next(playTimeValue);
+
     if (
       playTimeValue + this.playTimeMinimum >=
       this.intervalValueInMilliseconds$.value
     ) {
+      console.log(`Interval: ${playTimeValue + this.playTimeMinimum}`);
       this.intervalValueInMilliseconds$.next(
         playTimeValue + this.playTimeMinimum
       );
     }
-    this.playTimeValue$.next(playTimeValue);
   }
 
   soundTypeChanged(event) {
-    console.log(event);
+    console.log(`Sound type: ${event.value}`);
     this.soundType$.next(event.value);
   }
 

@@ -1,0 +1,36 @@
+mat-sidenav-container {
+  height: 100%;
+}
+
+mat-sidenav {
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+:host ::ng-deep .mat-list-item-content {
+  padding: 0px !important;
+}
+
+mat-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+mat-list-item a {
+  padding: 1rem;
+  width: 100%;
+}
+
+mat-list-item:not(:last-child) {
+  padding-bottom: 0.5rem;
+}
+
+.icon-header {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 6em;
+  text-align: center;
+}

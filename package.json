@@ -1,13 +1,24 @@
 {
   "name": "minimap-reminder",
   "version": "0.0.0",
+  "main": "main.js",
+  "author": {
+    "name": "Theraggon",
+    "email": "Theraggon@gmail.com",
+    "url": "https://github.com/Theraggon"
+  },
+  "description": "Minimap Reminder. App that reminds you to look at minimap",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "electron-forge start",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "electron": "electron .",
+    "start:electron": "ng build --base-href ./ && electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +32,7 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "electron-squirrel-startup": "^1.0.0",
     "rxjs": "~6.5.4",
     "subsink": "^1.0.1",
     "tslib": "^1.10.0",
@@ -31,10 +43,16 @@
     "@angular/cli": "~9.1.0",
     "@angular/compiler-cli": "~9.1.0",
     "@angular/language-service": "~9.1.0",
-    "@types/node": "^12.11.1",
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "electron": "^10.1.5",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.4.1",
@@ -46,5 +64,34 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "minimap_reminder"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }

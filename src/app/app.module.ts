@@ -4,7 +4,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -13,9 +15,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReminderComponent } from './reminder/reminder.component';
+import { InfoComponent } from './info/info.component';
 
 @NgModule({
-  declarations: [AppComponent, ReminderComponent],
+  declarations: [AppComponent, ReminderComponent, InfoComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -30,6 +33,8 @@ import { ReminderComponent } from './reminder/reminder.component';
     MatSnackBarModule,
     MatRadioModule,
     MatTooltipModule,
+    MatSidenavModule,
+    MatListModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
