@@ -132,6 +132,9 @@ export class ReminderComponent implements OnInit, OnDestroy {
   }
 
   start() {
+    if (this.context && this.context.state !== 'running') {
+      this.context.resume();
+    }
     if (!this.subscribedInterval) {
       console.log('Started');
       this.subscribedInterval = this.interval.subscribe((event) => {
