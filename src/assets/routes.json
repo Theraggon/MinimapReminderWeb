@@ -1,5 +1,9 @@
 {
-  "route": "/old-page.html",
-  "serve": "/new-page.html",
-  "statusCode": 301
+  "routes": [
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ]
 }
