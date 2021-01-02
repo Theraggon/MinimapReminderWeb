@@ -50,24 +50,8 @@ export class ReminderComponent implements OnInit, OnDestroy {
     this.createOscillator();
     this.oscillator.start();
     this.oscillator.connect(this.gainNode);
-  }
 
-  private createOscillator() {
-    this.oscillator = this.context.createOscillator();
-    this.oscillator.type = 'sine'; // this is the default - also square, sawtooth, triangle
-    this.subs.sink = this.soundType$.subscribe((type) => {
-      this.oscillator.type = type;
-    });
-    this.oscillator.frequency.value = 240; // Hz
-  }
-
-  private createContext() {
-    this.context = new window.AudioContext();
-    this.gainNode = this.context.createGain();
-    this.gainNode.gain.value = this.volume$.value / 100;
-    this.subs.sink = this.volume$.subscribe((volume) => {
-      this.gainNode.gain.value = volume / 100;
-    });
+    // TODO: Add caching to local storage
   }
 
   volumeSliderChanged(event: { value: number }) {
@@ -154,6 +138,36 @@ export class ReminderComponent implements OnInit, OnDestroy {
     }
   }
 
+  stop() {
+    if (this.subscribedInterval) {
+      console.log('Stopped');
+      this.subscribedInterval.unsubscribe();
+      this.subscribedInterval = null;
+    }
+  }
+
+  formatVolumeLabel(value: number) {
+    return `${value.toFixed(0)}%`;
+  }
+
+  private createContext() {
+    this.context = new window.AudioContext();
+    this.gainNode = this.context.createGain();
+    this.gainNode.gain.value = this.volume$.value / 100;
+    this.subs.sink = this.volume$.subscribe((volume) => {
+      this.gainNode.gain.value = volume / 100;
+    });
+  }
+
+  private createOscillator() {
+    this.oscillator = this.context.createOscillator();
+    this.oscillator.type = 'sine'; // this is the default - also square, sawtooth, triangle
+    this.subs.sink = this.soundType$.subscribe((type) => {
+      this.oscillator.type = type;
+    });
+    this.oscillator.frequency.value = 240; // Hz
+  }
+
   /*
    * Creates timer based on playTimeValue.
    * If playTime is too close to or over the intervalValue it defaults to playTimeMinimum
@@ -169,17 +183,5 @@ export class ReminderComponent implements OnInit, OnDestroy {
       disconnectTimer = timer(this.playTimeMinimum);
     }
     return disconnectTimer;
-  }
-
-  stop() {
-    if (this.subscribedInterval) {
-      console.log('Stopped');
-      this.subscribedInterval.unsubscribe();
-      this.subscribedInterval = null;
-    }
-  }
-
-  formatVolumeLabel(value: number) {
-    return `${value.toFixed(0)}%`;
   }
 }
