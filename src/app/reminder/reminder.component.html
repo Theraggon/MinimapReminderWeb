@@ -27,7 +27,7 @@
           max="200"
           [value]="volume$ | async"
           [displayWith]="formatVolumeLabel"
-          (change)="volumeSliderChanged($event)"
+          (change)="volumeSliderChanged($event.value)"
         ></mat-slider>
       </div>
 
@@ -41,7 +41,7 @@
             step="100"
             [min]="intervalMinimum"
             [value]="intervalValueInMilliseconds$ | async"
-            (change)="intervalChanged($event)"
+            (change)="intervalChanged($event.target.valueAsNumber)"
           />
         </mat-form-field>
       </div>
@@ -58,7 +58,7 @@
             step="50"
             [min]="playTimeMinimum"
             [value]="playTimeValue$ | async"
-            (change)="playTimeChanged($event)"
+            (change)="playTimeChanged($event.target.valueAsNumber)"
           />
         </mat-form-field>
       </div>
@@ -66,7 +66,7 @@
         <label id="example-radio-group-label">Sound type:</label>
         <mat-radio-group
           [value]="soundType$ | async"
-          (change)="soundTypeChanged($event)"
+          (change)="soundTypeChanged($event.value)"
           aria-label="Select a sound type"
         >
           <mat-radio-button value="sine">Sine</mat-radio-button>
