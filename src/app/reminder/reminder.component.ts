@@ -1,16 +1,42 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, interval, Subscription, timer } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  interval,
+  Subscription,
+  timer,
+} from 'rxjs';
+import { distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { CachingService } from './caching.service';
 
+export type reminderState = {
+  interval: number;
+  playTime: number;
+  volume: number;
+  soundType: OscillatorType;
+};
 @Component({
   selector: 'app-reminder',
   templateUrl: './reminder.component.html',
   styleUrls: ['./reminder.component.scss'],
 })
 export class ReminderComponent implements OnInit, OnDestroy {
-  intervalValueInMilliseconds$ = new BehaviorSubject(5000);
+  private state: reminderState = {
+    interval: 5000,
+    playTime: 500,
+    volume: 10,
+    soundType: 'sine',
+  };
+
+  private store = new BehaviorSubject<reminderState>(this.state);
+  private state$ = this.store.asObservable();
+
+  intervalValueInMilliseconds$ = this.state$.pipe(
+    map((state) => state.interval),
+    distinctUntilChanged()
+  );
   intervalMinimum = 100;
   interval = this.intervalValueInMilliseconds$.pipe(
     switchMap((value) => {
@@ -21,12 +47,21 @@ export class ReminderComponent implements OnInit, OnDestroy {
     })
   );
 
-  playTimeValue$ = new BehaviorSubject(500);
+  playTimeValue$ = this.state$.pipe(
+    map((state) => state.playTime),
+    distinctUntilChanged()
+  );
   playTimeMinimum = 50;
 
-  volume$ = new BehaviorSubject(10);
+  volume$ = this.state$.pipe(
+    map((state) => state.volume),
+    distinctUntilChanged()
+  );
 
-  soundType$ = new BehaviorSubject<OscillatorType>('sine');
+  soundType$ = this.state$.pipe(
+    map((state) => state.soundType),
+    distinctUntilChanged()
+  );
 
   context: AudioContext;
   oscillator: OscillatorNode;
@@ -38,7 +73,10 @@ export class ReminderComponent implements OnInit, OnDestroy {
 
   subs = new SubSink();
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private cachingService: CachingService
+  ) {}
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -46,18 +84,24 @@ export class ReminderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const reminderCache = this.cachingService.getCache();
+    if (reminderCache) {
+      this.updateState(reminderCache);
+    }
+
     this.createContext();
     this.createOscillator();
     this.oscillator.start();
     this.oscillator.connect(this.gainNode);
 
-    // TODO: Add caching to local storage
+    this.state$.subscribe((state) => {
+      this.cachingService.setCache(state);
+    });
   }
 
-  volumeSliderChanged(event: { value: number }) {
-    const volumeValue = event.value;
+  volumeSliderChanged(volumeValue: number) {
     console.log(`Volume: ${volumeValue}%`);
-    this.volume$.next(volumeValue);
+    this.updateState({ ...this.state, volume: volumeValue });
 
     if (volumeValue > 20 && !this.isVolumeWarningAlreadyDisplayed) {
       this.isVolumeWarningAlreadyDisplayed = true;
@@ -69,50 +113,57 @@ export class ReminderComponent implements OnInit, OnDestroy {
     }
   }
 
-  intervalChanged(event: { target: HTMLInputElement }) {
-    let intervalValue = event.target.valueAsNumber;
+  intervalChanged(intervalValue: number) {
     console.log(`Interval: ${intervalValue}`);
 
     if (intervalValue < this.intervalMinimum) {
       intervalValue = this.intervalMinimum;
     }
+    this.updateState({ ...this.state, interval: intervalValue });
 
-    this.intervalValueInMilliseconds$.next(intervalValue);
-
-    if (intervalValue - this.playTimeMinimum <= this.playTimeValue$.value) {
-      if (intervalValue - this.playTimeMinimum < this.playTimeMinimum) {
-        console.log(`Play time: ${this.playTimeMinimum}`);
-        this.playTimeValue$.next(this.playTimeMinimum);
-      } else {
-        console.log(`Play time: ${intervalValue - this.playTimeMinimum}`);
-        this.playTimeValue$.next(intervalValue - this.playTimeMinimum);
+    this.playTimeValue$.pipe(take(1)).subscribe((playTimeValue) => {
+      if (intervalValue - this.playTimeMinimum <= playTimeValue) {
+        if (intervalValue - this.playTimeMinimum < this.playTimeMinimum) {
+          console.log(`Play time: ${this.playTimeMinimum}`);
+          this.updateState({ ...this.state, playTime: this.playTimeMinimum });
+        } else {
+          console.log(`Play time: ${intervalValue - this.playTimeMinimum}`);
+          this.updateState({
+            ...this.state,
+            playTime: intervalValue - this.playTimeMinimum,
+          });
+        }
       }
-    }
+    });
   }
 
-  playTimeChanged(event: { target: HTMLInputElement }) {
-    let playTimeValue = event.target.valueAsNumber;
+  playTimeChanged(playTimeValue: number) {
     console.log(`Play time: ${playTimeValue}`);
 
     if (playTimeValue < this.playTimeMinimum) {
       playTimeValue = this.playTimeMinimum;
     }
-    this.playTimeValue$.next(playTimeValue);
+    this.updateState({ ...this.state, playTime: playTimeValue });
 
-    if (
-      playTimeValue + this.playTimeMinimum >=
-      this.intervalValueInMilliseconds$.value
-    ) {
-      console.log(`Interval: ${playTimeValue + this.playTimeMinimum}`);
-      this.intervalValueInMilliseconds$.next(
-        playTimeValue + this.playTimeMinimum
-      );
-    }
+    this.intervalValueInMilliseconds$
+      .pipe(take(1))
+      .subscribe((intervalValue) => {
+        if (playTimeValue + this.playTimeMinimum >= intervalValue) {
+          console.log(`Interval: ${playTimeValue + this.playTimeMinimum}`);
+          this.updateState({
+            ...this.state,
+            interval: playTimeValue + this.playTimeMinimum,
+          });
+        }
+      });
   }
 
-  soundTypeChanged(event) {
-    console.log(`Sound type: ${event.value}`);
-    this.soundType$.next(event.value);
+  soundTypeChanged(soundType: OscillatorType) {
+    console.log(`Sound type: ${soundType}`);
+    this.updateState({
+      ...this.state,
+      soundType,
+    });
   }
 
   start() {
@@ -125,15 +176,17 @@ export class ReminderComponent implements OnInit, OnDestroy {
         this.oscillator.frequency.value = Math.random() * 5000 + 160; // Hz
 
         this.gainNode.connect(this.context.destination);
-
-        const disconnectTimer = this.createValidDisconnectTimer(
-          this.playTimeValue$.value,
-          this.intervalValueInMilliseconds$.value
-        );
-
-        disconnectTimer.subscribe(() =>
-          this.gainNode.disconnect(this.context.destination)
-        );
+        combineLatest([this.playTimeValue$, this.intervalValueInMilliseconds$])
+          .pipe(take(1))
+          .subscribe(([playTime, intervalValue]) => {
+            const disconnectTimer = this.createValidDisconnectTimer(
+              playTime,
+              intervalValue
+            );
+            disconnectTimer.subscribe(() =>
+              this.gainNode.disconnect(this.context.destination)
+            );
+          });
       });
     }
   }
@@ -150,10 +203,13 @@ export class ReminderComponent implements OnInit, OnDestroy {
     return `${value.toFixed(0)}%`;
   }
 
+  private updateState(state: reminderState) {
+    this.store.next((this.state = state));
+  }
+
   private createContext() {
     this.context = new window.AudioContext();
     this.gainNode = this.context.createGain();
-    this.gainNode.gain.value = this.volume$.value / 100;
     this.subs.sink = this.volume$.subscribe((volume) => {
       this.gainNode.gain.value = volume / 100;
     });
@@ -176,7 +232,10 @@ export class ReminderComponent implements OnInit, OnDestroy {
     playTimeValue: number,
     intervalValueInMilliseconds: number
   ) {
-    let disconnectTimer = timer(this.playTimeValue$.value);
+    let disconnectTimer;
+    this.playTimeValue$.pipe(take(1)).subscribe((playTime) => {
+      disconnectTimer = timer(playTime);
+    });
     if (playTimeValue <= intervalValueInMilliseconds - 50) {
       disconnectTimer = timer(playTimeValue);
     } else {
