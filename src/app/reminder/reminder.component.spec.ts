@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ReminderComponent } from './reminder.component';
 
@@ -6,7 +6,7 @@ describe('ReminderComponent', () => {
   let component: ReminderComponent;
   let fixture: ComponentFixture<ReminderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ReminderComponent ]
     })
