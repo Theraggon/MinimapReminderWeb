@@ -1,16 +1,14 @@
-<!-- TODO: Change layout on mobile devices
-     TODO: Add customizable presets ?
-  -->
-
 <mat-card>
   <mat-card-header>
     <mat-card-title>Minimap Reminder</mat-card-title>
     <mat-icon
+    class="end"
       matTooltip="
       Makes random sound between 160 - 5160 Hz every {Interval} milliseconds for {Sound duration} milliseconds.
       Every time you hear the sound you should look at minimap now or in close future.
       Feel free to use this tool for any other reminder you may need (Check your mana, check corners, reminder for resin refill, take a break [there are better tools for this], water your plants [probably not])"
-      >help</mat-icon
+      matTooltipClass="tooltip" 
+      matTooltipPosition="right">help</mat-icon
     >
   </mat-card-header>
   <mat-card-content>
@@ -34,7 +32,7 @@
       <div class="row">
         <mat-icon aria-label="Interval" title="Interval"> timer </mat-icon>
         <mat-form-field color="accent">
-          <mat-label>Inteval (ms)</mat-label>
+          <mat-label>Inteval</mat-label>
           <input
             matInput
             type="number"
@@ -42,7 +40,8 @@
             [min]="intervalMinimum"
             [value]="intervalValueInMilliseconds$ | async"
             (change)="intervalChanged($event.target.valueAsNumber)"
-          />
+            />
+            <span matSuffix>ms</span>
         </mat-form-field>
       </div>
 
@@ -51,7 +50,7 @@
           timelapse
         </mat-icon>
         <mat-form-field color="accent">
-          <mat-label>Sound duration (ms)</mat-label>
+          <mat-label>Sound duration</mat-label>
           <input
             matInput
             type="number"
@@ -59,10 +58,11 @@
             [min]="playTimeMinimum"
             [value]="playTimeValue$ | async"
             (change)="playTimeChanged($event.target.valueAsNumber)"
-          />
+            />
+            <span matSuffix>ms</span>
         </mat-form-field>
       </div>
-      <div class="column">
+      <div class="row wrap">
         <label id="example-radio-group-label">Sound type:</label>
         <mat-radio-group
           [value]="soundType$ | async"

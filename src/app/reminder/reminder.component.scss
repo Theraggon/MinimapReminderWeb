@@ -3,16 +3,21 @@
   padding-top: 5em;
 }
 
+.end {
+  margin-left: auto;
+}
+
 mat-card {
   margin: auto;
   vertical-align: middle;
-  min-width: 200px;
+  min-width: 16em;
   width: min-content;
 }
 
 form {
   display: flex;
   flex-direction: column;
+  margin: auto;
   width: 100%;
 }
 
@@ -21,6 +26,14 @@ form {
   flex-direction: row;
   align-items: center;
   gap: 1em;
+  width: 100%;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+mat-form-field {
   width: 100%;
 }
 
