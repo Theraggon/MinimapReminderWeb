@@ -1,31 +1,38 @@
-mat-sidenav-container {
-  height: 100%;
-}
-
-mat-sidenav {
-  display: flex;
-  flex-direction: column;
-}
-
 a {
   color: white;
   text-decoration: none;
+}
+
+.icon-link {
+  height: 60px;
+  margin-right: 0.5em;
 }
 
 :host ::ng-deep .mat-list-item-content {
   padding: 0px !important;
 }
 
-mat-list-item:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-mat-list-item a {
-  padding: 1rem;
-  width: 100%;
+mat-list {
+  padding-top: 0;
+  height: 100%;
+  align-items: center;
+  gap: 0.5em;
+  background-color: #212121;
 }
 
-mat-list-item:not(:last-child) {
-  padding-bottom: 0.5rem;
+mat-list-item {
+  height: 100%;
+  a {
+    text-align: center;
+  }
+}
+
+mat-list-item a {
+  color: rgb(212, 6, 110);
+  font-weight: bold;
+  font-size: 1.5em;
+  padding: 1rem;
+  width: 100%;
 }
 
 .icon-header {
@@ -33,4 +40,36 @@ mat-list-item:not(:last-child) {
   padding-bottom: 0.5rem;
 
   text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  height: 4em;
+}
+
+@media only screen and (max-width: 500px) {
+  .menu {
+    padding-top: 0.5em;
+    flex-direction: column;
+    gap: 1em;
+    height: auto;
+  }
+  .menu-list {
+    flex-wrap: wrap;
+  }
+
+  mat-list-item {
+    flex: 1;
+  }
 }
