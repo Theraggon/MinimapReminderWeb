@@ -9,13 +9,14 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ReminderComponent } from './reminder/reminder.component';
 import { InfoComponent } from './info/info.component';
+import { ReminderComponent } from './reminder/reminder.component';
 
 @NgModule({
   declarations: [AppComponent, ReminderComponent, InfoComponent],
@@ -33,6 +34,7 @@ import { InfoComponent } from './info/info.component';
     MatSnackBarModule,
     MatRadioModule,
     MatTooltipModule,
+    MatToolbarModule,
     MatSidenavModule,
     MatListModule,
   ],
