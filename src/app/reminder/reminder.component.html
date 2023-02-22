@@ -74,6 +74,15 @@
           <mat-radio-button value="sawtooth">Sawtooth</mat-radio-button>
         </mat-radio-group>
       </div>
+      <div class="row">
+        <label>Show notifications:</label>
+        <mat-checkbox
+          [value]="areNotificationsAllowed$ | async"
+          (change)="areNotificationsAllowedChanged($event.checked)"
+          aria-label="Allow notifications">
+
+        </mat-checkbox>
+      </div>
     </form>
   </mat-card-content>
   <mat-card-actions>

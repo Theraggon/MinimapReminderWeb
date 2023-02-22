@@ -17,27 +17,29 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InfoComponent } from './info/info.component';
 import { ReminderComponent } from './reminder/reminder.component';
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [AppComponent, ReminderComponent, InfoComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
 
-    MatInputModule,
-    MatButtonModule,
-    MatSliderModule,
-    MatCardModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatSnackBarModule,
-    MatRadioModule,
-    MatTooltipModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatListModule,
-  ],
+        MatInputModule,
+        MatButtonModule,
+        MatSliderModule,
+        MatCardModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSnackBarModule,
+        MatRadioModule,
+        MatTooltipModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatListModule,
+        MatCheckboxModule,
+    ],
   providers: [],
   bootstrap: [AppComponent],
 })

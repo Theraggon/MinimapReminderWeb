@@ -16,6 +16,7 @@ export type reminderState = {
   playTime: number;
   volume: number;
   soundType: OscillatorType;
+  areNotificationsAllowed: boolean;
 };
 @Component({
   selector: 'app-reminder',
@@ -28,6 +29,7 @@ export class ReminderComponent implements OnInit, OnDestroy {
     playTime: 500,
     volume: 10,
     soundType: 'sine',
+    areNotificationsAllowed: false,
   };
 
   private store = new BehaviorSubject<reminderState>(this.state);
@@ -60,6 +62,11 @@ export class ReminderComponent implements OnInit, OnDestroy {
 
   soundType$ = this.state$.pipe(
     map((state) => state.soundType),
+    distinctUntilChanged()
+  );
+
+  areNotificationsAllowed$ = this.state$.pipe(
+    map((state) => state.areNotificationsAllowed),
     distinctUntilChanged()
   );
 
@@ -166,6 +173,30 @@ export class ReminderComponent implements OnInit, OnDestroy {
     });
   }
 
+  areNotificationsAllowedChanged(areNotificationsAllowed: boolean) {
+    if(Notification.permission !== 'granted'){
+      Notification.requestPermission();
+    }
+    this.updateState({
+      ...this.state,
+      areNotificationsAllowed,
+    });
+  }
+  notify() {
+    console.log('Notify!');
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+      const notification = new Notification("Hi there!");
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          const notification = new Notification("Hi there!");
+        }
+      });
+    }
+  }
+
   start() {
     if (this.context && this.context.state !== 'running') {
       this.context.resume();
@@ -183,6 +214,12 @@ export class ReminderComponent implements OnInit, OnDestroy {
               playTime,
               intervalValue
             );
+            this.areNotificationsAllowed$.pipe(take(1)).subscribe((areNotificationsAllowed) => {
+              console.log(areNotificationsAllowed);
+              if (areNotificationsAllowed) {
+                this.notify();
+              }
+            });
             disconnectTimer.subscribe(() =>
               this.gainNode.disconnect(this.context.destination)
             );
