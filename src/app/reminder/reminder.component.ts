@@ -182,16 +182,25 @@ export class ReminderComponent implements OnInit, OnDestroy {
       areNotificationsAllowed,
     });
   }
-  notify() {
+  notify(body: string = '') {
+    const notificationConfig = {
+      body,
+      data: 'Data',
+      badge: 'assets/minimap-reminder-icon.svg',
+      icon: 'assets/minimap-reminder-icon.svg',
+      renotify: true,
+      silent: true,
+      tag: new Date().toString(),
+    };
     console.log('Notify!');
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
     } else if (Notification.permission === "granted") {
-      const notification = new Notification("Hi there!");
+      const notification = new Notification("Reminder", notificationConfig);
     } else if (Notification.permission !== "denied") {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
-          const notification = new Notification("Hi there!");
+          const notification = new Notification('Reminder', notificationConfig);
         }
       });
     }
@@ -215,9 +224,8 @@ export class ReminderComponent implements OnInit, OnDestroy {
               intervalValue
             );
             this.areNotificationsAllowed$.pipe(take(1)).subscribe((areNotificationsAllowed) => {
-              console.log(areNotificationsAllowed);
               if (areNotificationsAllowed) {
-                this.notify();
+                this.notify(`${this.msToHumanReadableTime(intervalValue)} has passed`);
               }
             });
             disconnectTimer.subscribe(() =>
@@ -226,6 +234,17 @@ export class ReminderComponent implements OnInit, OnDestroy {
           });
       });
     }
+  }
+
+  msToHumanReadableTime(ms: number) {
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    const minutes = Math.floor((ms - (hours * (1000 * 60 * 60)) ) / (1000 * 60));
+    const seconds = Math.floor((ms - (minutes * (1000 * 60)) ) / (1000));
+    let result = '';
+    result += hours ? ` ${hours} ${hours === 1 ? 'hour' : 'hours'}` : '';
+    result += minutes ? ` ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}` : '';
+    result += seconds ? ` ${seconds} ${seconds === 1 ? 'second' : 'seconds'}` : '';
+    return result;
   }
 
   stop() {
